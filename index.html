@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Revised Table of Proportions</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Table of proportions from the Pocket Edition of the Cutters' Practical Guide 17th ed."
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "EB Garamond", serif;
+        font-size: 29px;
+        color: rgb(17, 17, 17);
+        max-width: 960px;
+        margin: 10vh auto 0;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        font-weight: normal;
+        text-transform: uppercase;
+        margin: unset;
+      }
+
+      h1 {
+        font-size: 1.2em;
+        font-style: italic;
+      }
+      h2 {
+        font-size: 1em;
+      }
+
+      main {
+        overflow-y: scroll;
+      }
+
+      table {
+        border-top: 1px solid black;
+        border-spacing: 0.65em 0.07em;
+        line-height: 1.1;
+        padding-top: 0.5em;
+      }
+
+      th {
+        font-weight: normal;
+        text-align: left;
+        background-color: white;
+        position: sticky;
+        left: 0;
+        width: 6em;
+      }
+      @media (min-width: 400px) {
+        th {
+          width: 7.5em;
+        }
+      }
+
+      td[is="fraction-number-cell"] > .cell-wrapper {
+        display: flex;
+        align-items: center;
+      }
+      td[is="fraction-number-cell"] > .cell-wrapper > .whole {
+        flex: 1;
+        text-align: right;
+      }
+      td[is="fraction-number-cell"] > .cell-wrapper > .fraction {
+        width: 1ch;
+        font-size: 0.8em;
+      }
+    </style>
+
+    <script>
+      const superscripts = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+      const subscripts = "₀₁₂₃₄₅₆₇₈₉";
+
+      function gcd(a, b) {
+        return b ? gcd(b, a % b) : a;
+      }
+
+      function reduceFraction(numerator, denominator) {
+        const _gcd = gcd(numerator, denominator);
+        return [numerator / _gcd, denominator / _gcd];
+      }
+
+      function decimal2fraction(dec, precision = 16) {
+        const [whole, part] = dec.toString().split(".");
+        const [numerator, denominator] = reduceFraction(
+          Math.round((dec - +whole) * precision),
+          precision
+        );
+        return {
+          whole: `${dec < 0 ? "-" : ""}${whole > 0 ? whole : ""}`,
+          fraction:
+            numerator === 0
+              ? ""
+              : `
+            ${Array.from(numerator.toString())
+              .map(x => superscripts[x])
+              .join("")}⁄${Array.from(denominator.toString())
+                  .map(x => subscripts[x])
+                  .join("")}
+    `
+        };
+      }
+
+      class FractionNumberCellElement extends HTMLTableCellElement {
+        constructor() {
+          super();
+          new MutationObserver((_, mo) => {
+            mo.disconnect();
+            this.finishedParsingChildrenCallback();
+          }).observe(this, { childList: true });
+        }
+
+        finishedParsingChildrenCallback() {
+          const input = Number(this.innerHTML);
+          const { whole, fraction } = decimal2fraction(input);
+          this.innerHTML = `<div class="cell-wrapper"><div class="whole">${whole}</div><div class="fraction">${fraction}</div></div>`;
+        }
+      }
+
+      customElements.define("fraction-number-cell", FractionNumberCellElement, {
+        extends: "td"
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Revised Table of Proportions</h1>
+    <h2>For direct and other measures</h2>
+    <main>
+    <table>
+      <tr>
+        <th scope="col">Chest</th>
+        <td is="fraction-number-cell">30</td>
+        <td is="fraction-number-cell">32</td>
+        <td is="fraction-number-cell">34</td>
+        <td is="fraction-number-cell">36</td>
+        <td is="fraction-number-cell">38</td>
+        <td is="fraction-number-cell">40</td>
+        <td is="fraction-number-cell">42</td>
+        <td is="fraction-number-cell">44</td>
+        <td is="fraction-number-cell">46</td>
+        <td is="fraction-number-cell">48</td>
+        <td is="fraction-number-cell">50</td>
+      </tr>
+      <tr>
+        <th scope="col">Waist</th>
+        <td is="fraction-number-cell">28</td>
+        <td is="fraction-number-cell">29</td>
+        <td is="fraction-number-cell">30</td>
+        <td is="fraction-number-cell">32.5</td>
+        <td is="fraction-number-cell">34</td>
+        <td is="fraction-number-cell">37</td>
+        <td is="fraction-number-cell">39</td>
+        <td is="fraction-number-cell">42</td>
+        <td is="fraction-number-cell">46</td>
+        <td is="fraction-number-cell">48</td>
+        <td is="fraction-number-cell">52</td>
+      </tr>
+      <tr>
+        <th scope="col">Seat</th>
+        <td is="fraction-number-cell">33</td>
+        <td is="fraction-number-cell">35</td>
+        <td is="fraction-number-cell">36</td>
+        <td is="fraction-number-cell">38</td>
+        <td is="fraction-number-cell">40</td>
+        <td is="fraction-number-cell">42</td>
+        <td is="fraction-number-cell">44</td>
+        <td is="fraction-number-cell">46</td>
+        <td is="fraction-number-cell">48</td>
+        <td is="fraction-number-cell">50</td>
+        <td is="fraction-number-cell">52</td>
+      </tr>
+      <tr>
+        <th scope="col">Scye Depth</th>
+        <td is="fraction-number-cell">7.75</td>
+        <td is="fraction-number-cell">8.125</td>
+        <td is="fraction-number-cell">8.5</td>
+        <td is="fraction-number-cell">9</td>
+        <td is="fraction-number-cell">9.375</td>
+        <td is="fraction-number-cell">9.75</td>
+        <td is="fraction-number-cell">10</td>
+        <td is="fraction-number-cell">10.375</td>
+        <td is="fraction-number-cell">10.625</td>
+        <td is="fraction-number-cell">10.875</td>
+        <td is="fraction-number-cell">11.125</td>
+      </tr>
+      <tr>
+        <th scope="col">Natural Waist</th>
+        <td is="fraction-number-cell">15.5</td>
+        <td is="fraction-number-cell">16</td>
+        <td is="fraction-number-cell">16.25</td>
+        <td is="fraction-number-cell">16.25</td>
+        <td is="fraction-number-cell">16.875</td>
+        <td is="fraction-number-cell">17.25</td>
+        <td is="fraction-number-cell">17.625</td>
+        <td is="fraction-number-cell">18</td>
+        <td is="fraction-number-cell">18.25</td>
+        <td is="fraction-number-cell">18.25</td>
+        <td is="fraction-number-cell">18.5</td>
+      </tr>
+      <tr>
+        <th scope="col">Across Back</th>
+        <td is="fraction-number-cell">7.25</td>
+        <td is="fraction-number-cell">7.5</td>
+        <td is="fraction-number-cell">7.75</td>
+        <td is="fraction-number-cell">8</td>
+        <td is="fraction-number-cell">8.25</td>
+        <td is="fraction-number-cell">8.5</td>
+        <td is="fraction-number-cell">8.75</td>
+        <td is="fraction-number-cell">9</td>
+        <td is="fraction-number-cell">9.25</td>
+        <td is="fraction-number-cell">9.5</td>
+        <td is="fraction-number-cell">9.75</td>
+      </tr>
+      <tr>
+        <th scope="col">Sleeve Length</th>
+        <td is="fraction-number-cell">30.5</td>
+        <td is="fraction-number-cell">31</td>
+        <td is="fraction-number-cell">31.5</td>
+        <td is="fraction-number-cell">32</td>
+        <td is="fraction-number-cell">32.5</td>
+        <td is="fraction-number-cell">33</td>
+        <td is="fraction-number-cell">33.25</td>
+        <td is="fraction-number-cell">34</td>
+        <td is="fraction-number-cell">34.5</td>
+        <td is="fraction-number-cell">34.5</td>
+        <td is="fraction-number-cell">34.25</td>
+      </tr>
+      <tr>
+        <th scope="col">Front Shoulder</th>
+        <td is="fraction-number-cell">11.75</td>
+        <td is="fraction-number-cell">12</td>
+        <td is="fraction-number-cell">12.5</td>
+        <td is="fraction-number-cell">13</td>
+        <td is="fraction-number-cell">13.375</td>
+        <td is="fraction-number-cell">13.875</td>
+        <td is="fraction-number-cell">14.25</td>
+        <td is="fraction-number-cell">14.875</td>
+        <td is="fraction-number-cell">15.5</td>
+        <td is="fraction-number-cell">16</td>
+        <td is="fraction-number-cell">16.5</td>
+      </tr>
+      <tr>
+        <th scope="col">Overshoulder</th>
+        <td is="fraction-number-cell">16</td>
+        <td is="fraction-number-cell">16.25</td>
+        <td is="fraction-number-cell">16.875</td>
+        <td is="fraction-number-cell">17.75</td>
+        <td is="fraction-number-cell">18.25</td>
+        <td is="fraction-number-cell">18.75</td>
+        <td is="fraction-number-cell">19.5</td>
+        <td is="fraction-number-cell">20.5</td>
+        <td is="fraction-number-cell">21</td>
+        <td is="fraction-number-cell">22</td>
+        <td is="fraction-number-cell">23</td>
+      </tr>
+      <tr>
+        <th scope="col">Across chest</th>
+        <td is="fraction-number-cell">6.5</td>
+        <td is="fraction-number-cell">7</td>
+        <td is="fraction-number-cell">7.5</td>
+        <td is="fraction-number-cell">8</td>
+        <td is="fraction-number-cell">8.5</td>
+        <td is="fraction-number-cell">8.75</td>
+        <td is="fraction-number-cell">9.125</td>
+        <td is="fraction-number-cell">9.5</td>
+        <td is="fraction-number-cell">9.875</td>
+        <td is="fraction-number-cell">10.25</td>
+        <td is="fraction-number-cell">10.625</td>
+      </tr>
+      <tr>
+        <th scope="col">Outside leg</th>
+        <td is="fraction-number-cell">39.5</td>
+        <td is="fraction-number-cell">41</td>
+        <td is="fraction-number-cell">42.5</td>
+        <td is="fraction-number-cell">43</td>
+        <td is="fraction-number-cell">43.5</td>
+        <td is="fraction-number-cell">45</td>
+        <td is="fraction-number-cell">46</td>
+        <td is="fraction-number-cell">46.5</td>
+        <td is="fraction-number-cell">47</td>
+        <td is="fraction-number-cell">47.25</td>
+        <td is="fraction-number-cell">47.5</td>
+      </tr>
+      <tr>
+        <th scope="col">Inside Leg</th>
+        <td is="fraction-number-cell">28.5</td>
+        <td is="fraction-number-cell">29.5</td>
+        <td is="fraction-number-cell">30.5</td>
+        <td is="fraction-number-cell">31</td>
+        <td is="fraction-number-cell">31.5</td>
+        <td is="fraction-number-cell">32</td>
+        <td is="fraction-number-cell">32.5</td>
+        <td is="fraction-number-cell">32.5</td>
+        <td is="fraction-number-cell">32.5</td>
+        <td is="fraction-number-cell">32.25</td>
+        <td is="fraction-number-cell">32</td>
+      </tr>
+      <tr>
+        <th scope="col">Tight Knee</th>
+
+        <td is="fraction-number-cell">12</td>
+        <td is="fraction-number-cell">12.5</td>
+        <td is="fraction-number-cell">13</td>
+        <td is="fraction-number-cell">13.5</td>
+        <td is="fraction-number-cell">14</td>
+        <td is="fraction-number-cell">14.5</td>
+        <td is="fraction-number-cell">14.75</td>
+        <td is="fraction-number-cell">15.25</td>
+        <td is="fraction-number-cell">15.75</td>
+        <td is="fraction-number-cell">16</td>
+        <td is="fraction-number-cell">16.5</td>
+      </tr>
+      <tr>
+        <th scope="col">Tight Small</th>
+        <td is="fraction-number-cell">10.5</td>
+        <td is="fraction-number-cell">11</td>
+        <td is="fraction-number-cell">11.5</td>
+        <td is="fraction-number-cell">11.75</td>
+        <td is="fraction-number-cell">12</td>
+        <td is="fraction-number-cell">13</td>
+        <td is="fraction-number-cell">13.25</td>
+        <td is="fraction-number-cell">13.75</td>
+        <td is="fraction-number-cell">14</td>
+        <td is="fraction-number-cell">14</td>
+        <td is="fraction-number-cell">14.25</td>
+      </tr>
+      <tr>
+        <th scope="col">Tight Calf</th>
+        <td is="fraction-number-cell">11.75</td>
+        <td is="fraction-number-cell">12.25</td>
+        <td is="fraction-number-cell">13.75</td>
+        <td is="fraction-number-cell">13.5</td>
+        <td is="fraction-number-cell">14</td>
+        <td is="fraction-number-cell">14.5</td>
+        <td is="fraction-number-cell">14.75</td>
+        <td is="fraction-number-cell">15.25</td>
+        <td is="fraction-number-cell">15.5</td>
+        <td is="fraction-number-cell">15.5</td>
+        <td is="fraction-number-cell">16</td>
+      </tr>
+      <tr>
+        <th scope="col">Neck</th>
+        <td is="fraction-number-cell">13.25</td>
+        <td is="fraction-number-cell">14</td>
+        <td is="fraction-number-cell">14.5</td>
+        <td is="fraction-number-cell">15</td>
+        <td is="fraction-number-cell">15.5</td>
+        <td is="fraction-number-cell">16</td>
+        <td is="fraction-number-cell">16.5</td>
+        <td is="fraction-number-cell">17</td>
+        <td is="fraction-number-cell">17.5</td>
+        <td is="fraction-number-cell">18</td>
+        <td is="fraction-number-cell">18.5</td>
+      </tr>
+    </table>
+    </main>
+  </body>
+</html>
